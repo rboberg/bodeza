@@ -22,3 +22,4 @@ for line in fd:
 
 fd.close()
 
+data_list[0]['text']

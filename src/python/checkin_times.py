@@ -39,3 +39,4 @@ freq_dict = [dict(zip(['h','d','n'], ki.split('-')+[vi])) for ki, vi in checkins
 freq_df = pd.DataFrame(freq_dict)
 
 print ggplot(freq_df, aes(x='h', y='n', colour='d')) + geom_line()
+
