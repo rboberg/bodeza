@@ -66,8 +66,8 @@ for i in range(train_size):
     train_docs.append(data_list[i]['text'])
     star_train = np.append(star_train,data_list[i]['stars'])
     cool_train = np.append(cool_train,data_list[i]['votes']['cool'])
-    funny_train = np.append(star_train,data_list[i]['votes']['funny'])
-    useful_train = np.append(star_train,data_list[i]['votes']['useful'])
+    funny_train = np.append(funny_train,data_list[i]['votes']['funny'])
+    useful_train = np.append(useful_train,data_list[i]['votes']['useful'])
 
 # Create term document matrix
 count_v = CountVectorizer(tokenizer=ftokenize, stop_words='english')
@@ -85,9 +85,15 @@ mnbc = MultinomialNB().fit(tfidf_train, star_train)
 # Get testing data
 test_docs = []
 star_test = np.array([])
-for i in range(train_size,train_size+test_size):
+cool_test = np.array([])
+funny_test = np.array([])
+useful_test = np.array([])
+for i in range(train_size,test_size+train_size):
     test_docs.append(data_list[i]['text'])
     star_test = np.append(star_test,data_list[i]['stars'])
+    cool_test = np.append(cool_test,data_list[i]['votes']['cool'])
+    funny_test = np.append(funny_test,data_list[i]['votes']['funny'])
+    useful_test = np.append(useful_test,data_list[i]['votes']['useful'])
 
 # Create a term document matrix
 td_test = count_v.transform(test_docs)
@@ -115,14 +121,14 @@ sgdc_pred
 
 
 ### Stochastic Gradient Descent Regression
-sgdr_loss= 'squared_loss'
-sgdr = SGDRegressor(loss=sgdr_loss, penalty='l2', alpha=1e-3, n_iter=5)
-sgdr.fit(tfidf_train, star_train)
+sgdr_loss= 'huber'
+sgdr = SGDRegressor(loss=sgdr_loss, penalty='l2', alpha=1e-5, n_iter=50)
+sgdr.fit(tfidf_train, cool_train)
 
 sgdr_pred = sgdr.predict(tdidf_test)
 sgdr_pred
 
-pd.ols(y=star_test,x=pd.DataFrame(sgdr_pred))
+pd.ols(y=cool_test,x=pd.DataFrame(sgdr_pred))
 
 # Acccuracy
 np.mean(star_test == sgdc_pred)
