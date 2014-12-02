@@ -18,13 +18,15 @@ import os
 import random
 #import regex
 import re
+#need socket for timeouts
+import socket
 
 ############# CONSTANTS
 urlBase = "http://www.yelp.com/browse/reviews/picks_cities"
-csvName = 'cities.csv'
+csvName = 'cities_mixed.csv'
 noPages = 'all' #enter number of pages of reviews you want, per city. There are 10 reviews per page.
-wait_min = 10 #in seconds. Might stop Yelp blocking you
-wait_max = 15 
+wait_min = 15 #in seconds. Might stop Yelp blocking you
+wait_max = 30 
 
 ############# DEF FUNCTIONS
 def getURLs(url,output):
@@ -84,8 +86,10 @@ def parseReviews(cityURL, noPages = 'all'):
     #construct urls      
     urlList = []
     for i in range(noPages):
-        #create url based on ROTD archive url rules
+        #create url based on ROTD archive url rules.
         urlList.append(cityURL + '&start=' + str(i*10))
+    #Randomize to stop detection
+    random.shuffle(urlList)
     #traverse each page and save reviews
     reviewsList = []
     for i, url in enumerate(urlList):
@@ -112,7 +116,7 @@ def parseReviews(cityURL, noPages = 'all'):
             #Append data
             reviewsList.append([review.text,[stars,reviewDate,ROTDDate,numberFriends,numberReviews,funny,useful,cool]])
         #Print progress
-        print 'Parsed page %i of %i...' %(i+1,noPages)
+        print 'Parsed page %i of %i... "%s"' %(i+1,noPages,url)
     #return result
     print '...All reviews parsed'
     return reviewsList   
@@ -159,39 +163,42 @@ def brewSoup(url):
         wait = wait_min + (wait_max - wait_min)*random.random()
         print 'waiting for %f seconds' %wait
         time.sleep(wait)    
-        
-    # chill out for a while
-    waiter()  
+    
     # different user agents to use to prevent getting banned.
     user_agents = [
         'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11',
         'Opera/9.25 (Windows NT 5.1; U; en)',
         'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
         'Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.5 (like Gecko) (Kubuntu)',
-        'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.142 Safari/535.19',
+        'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.142 Samfari/535.19',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:11.0) Gecko/20100101 Firefox/11.0',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:8.0.1) Gecko/20100101 Firefox/8.0.1',
         'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.151 Safari/535.19'
-    ]        
-    #choose a random user agent and download webpage       
-    version = random.choice(user_agents)
-    headers = { 'User-Agent' : version }
-    '''    
-    req = urllib2.Request(url, '', headers)
-    htmlText = urllib2.urlopen(req).read()    
-    soup = BeautifulSoup(open(htmlText))
-    # close urllib object
-    htmlText.close()
-    '''
-    request = urllib2.Request(url)
-    request.add_header('User-agent', version)
-    try:    
-        page = urllib2.urlopen(request)
-    except:
-        print url
-        raise ValueError('cannot connect')
-    soup = BeautifulSoup(page)
-    return soup
+    ]  
+    
+    attempt = 0 #connection attempt #
+    while True:
+        attempt += 1
+        try:    
+            # chill out for a while
+            waiter()  
+              
+            #choose a random user agent and download webpage       
+            version = random.choice(user_agents)
+            request = urllib2.Request(url)
+            request.add_header('User-agent', version)
+            page = urllib2.urlopen(request)
+            soup = BeautifulSoup(page)
+            return soup
+        except socket.timeout as e:
+            print 'Connection timed out on:',url,'\n',repr(e)            
+            if attempt == 8:
+                raise e
+        except Exception as e:
+            print url,repr(e)
+            if attempt == 8:            
+                raise e
+
 
 def slugify(value):
     """
