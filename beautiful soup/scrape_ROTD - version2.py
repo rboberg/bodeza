@@ -25,8 +25,8 @@ import socket
 urlBase = "http://www.yelp.com/browse/reviews/picks_cities"
 csvName = 'cities_mixed.csv'
 noPages = 'all' #enter number of pages of reviews you want, per city. There are 10 reviews per page.
-wait_min = 10 #in seconds. Might stop Yelp blocking you
-wait_max = 20 
+wait_min = 15 #in seconds. Might stop Yelp blocking you
+wait_max = 30 
 
 ############# DEF FUNCTIONS
 def getURLs(url,output):
@@ -170,7 +170,7 @@ def brewSoup(url):
         'Opera/9.25 (Windows NT 5.1; U; en)',
         'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
         'Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.5 (like Gecko) (Kubuntu)',
-        'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.142 Safari/535.19',
+        'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.142 Samfari/535.19',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:11.0) Gecko/20100101 Firefox/11.0',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:8.0.1) Gecko/20100101 Firefox/8.0.1',
         'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.151 Safari/535.19'
@@ -191,12 +191,13 @@ def brewSoup(url):
             soup = BeautifulSoup(page)
             return soup
         except socket.timeout as e:
+            print 'Connection timed out on:',url,'\n',repr(e)            
             if attempt == 8:
-                print 'Connection timed out on:',url,'\n',repr(e)
                 raise e
         except Exception as e:
             print url,repr(e)
-            raise e
+            if attempt == 8:            
+                raise e
 
 
 def slugify(value):
