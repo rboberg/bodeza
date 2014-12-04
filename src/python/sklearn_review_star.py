@@ -157,6 +157,7 @@ print(metrics.confusion_matrix(star_test, np.array([1 for i in range(len(star_te
 
 ###################
 ### sklearn w/ optimized parameters
+### This takes forever
 
 mnbc_pipe = Pipeline([('vect', CountVectorizer(tokenizer=ftokenize, stop_words='english')),
                       ('tfidf', TfidfTransformer()),
