@@ -19,7 +19,7 @@ def main(argv=None):
         pipe_pickle = argv[2]
         review_text = argv[1]
         classifier_pipe = pickle.load(open(pipe_pickle,"rb"))
-        return classifier_pipe.predict_proba([review_text])[0]
+        print classifier_pipe.predict_proba([review_text])[0]
         
 if __name__ == "__main__":
     sys.exit(main())
