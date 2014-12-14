@@ -12,8 +12,7 @@ app.get('/test', function (req, res) {
 		for(i=0;i<args.length;i++){
 			cmd += (' ' + args[i])
 		}
-		//var python = require('child_process').spawn(
-		//'python', args);
+		cmd = cmd.replace(/"/g, "");
 		console.log(cmd);
 		var child;
 		child = require('child_process').exec(cmd,
@@ -25,21 +24,8 @@ app.get('/test', function (req, res) {
 					console.log('exec error: ' + error);
 				}
 			});
-		/*
-		var output = '';
-		python.stdout.on('data', function(){ output += data });
-		python.on('close', function(code){
-			console.log('python finished: ' + output)
-			if (code !== 0) {
-				 return res.status(500).send(String(code)); 
-			}
-			return res.status(200).send(output);
-		})
-		*/
-		//res.send(cmd)
 	} else {  res.status(200).send('No Input') }
 
-	//res.send('Got the GET: ' + req.query.input_text)
 })
 
 app.use(express.static(__dirname + '/public'))
