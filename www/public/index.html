@@ -1,14 +1,26 @@
 <HTML>
 <HEAD>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
 </HEAD>
 <BODY>
-<p>Hello World</p>
-<form action="test">
-Test Text:<br>
-<input type="text" name="input_text" value="Text Here">
+Input review text:<br>
+<input type="text" id="form_input_text" name="input_text" value="Review Here">
 <br>
-<input type="submit" value="Submit">
-</form>
+<button id="submit_button">Submit</button>
+<div id="rotd_score_div"></div>
 </BODY>
+<script>
+$('#submit_button').click(function(){
+$('#rotd_score_div').text("Calculating...");
+$.ajax({
+ type: "GET",
+ data: {
+  input_text: $('#form_input_text').val()
+ },
+ url: "/results"
+}).done(function(data){$('#rotd_score_div').text(data);});
+})
+</script>
 </HTML>
 
