@@ -7,6 +7,7 @@ Created on Thu Dec 04 08:09:46 2014
 
 import sys
 import cPickle as pickle
+import copy_reg
 
 def main(argv=None):
     if argv is None:
