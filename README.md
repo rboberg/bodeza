@@ -31,6 +31,7 @@ So the parent directory looks like:
 ## Creating the Classifier
 
 Code stored in and commands run out of:
+	
 	bodeza/src/python
 
 ### Step1 Combine Data Sources
@@ -45,9 +46,11 @@ make_rotd_json.py combines ROTD and Yelp Academic Data Set Review Data in to a s
 </ol>
 
 Running for testing on a subset:
+	
 	$ python make_rotd_json.py ../../beautiful_soup/results ../../../bodeza_data/yelp_data/yelp_academic_dataset_review.json 20000 rotd_model_sub.json mrjob_sub.txt
 
 Running for production:
+	
 	$ python make_rotd_json.py ../../beautiful_soup/results ../../../bodeza_data/yelp_data/yelp_academic_dataset_review.json 2000000 rotd_model.json mrjob.txt
 
 ### Step2 Train & Save
@@ -61,9 +64,11 @@ make_rotd_classifier.py trains the classifier and pickles a scikit-learn pipelin
 </ol>
 
 Running for testing on a subset:
+	
 	$ python make_rotd_classifier.py rotd_model_data.json 0.1 0.1 sgdc_pipe_sub.p
 
 Running for production holding out 10% for testing:
+	
 	$ python make_rotd_classifier.py rotd_model_data.json 1 0.1 sgdc_pipe.p
 	$ python make_rotd_classifier.py rotd_model_data.json 1 0.1 sgdc_pipe.p
 	Classification Report:
@@ -79,10 +84,12 @@ Running for production holding out 10% for testing:
 
 
 Running for production with no testing:
+	
 	$ python make_rotd_classifier.py rotd_model_data.json 1 0 sgdc_pipe.p
 
 ### Step3 Use It
 
 predict_rotd.py takes raw review text and the pickled classifier and prints the probability that the review came from the ROTD data set, not the academic data set.
+	
 	$ python predict_rotd.py "review text here" sgdc_pipe.p
 	0.0678734814354
