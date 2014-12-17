@@ -7,7 +7,6 @@ Created on Thu Dec 04 08:09:46 2014
 
 import sys
 import cPickle as pickle
-import copy_reg
 
 def main(argv=None):
     if argv is None:
@@ -20,7 +19,8 @@ def main(argv=None):
         pipe_pickle = argv[2]
         review_text = argv[1]
         classifier_pipe = pickle.load(open(pipe_pickle,"rb"))
-        return classifier_pipe.predict_proba([review_text])[0]
+        probs = classifier_pipe.predict_proba([review_text])[0]
+        print probs[1]
         
 if __name__ == "__main__":
     sys.exit(main())
