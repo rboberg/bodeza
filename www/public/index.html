@@ -1,26 +1,121 @@
-<HTML>
-<HEAD>
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
-</HEAD>
-<BODY>
-Input review text:<br>
+<html>
+<head>
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+    <style>
+		body {
+			background-color: #E1E1E1;
+			color: #333;
+			font-family: Verdana, Helvetica, Arial, sans-serif;
+			font-size: 0.77em;
+		}
+		
+		h1 {
+			color: red;
+			text-align: center;
+			margin-bottom: 1em;
+		}
+		
+		#content {
+			text-align: left;
+			margin-left: 0.5em;
+		}
+		
+		#instructions {
+			width: 50em;
+		}
+		
+		#form_input_text {
+			color: #CCC;
+			margin-bottom: 0.5em;
+		}
+		
+		.active_input {
+			color: #333;
+		}
+		
+		#rotd_score_div {
+			text-align: left;
+			margin-left: 0.5em;
+			font-size: 1.5em;
+		}
+	</style>
+</head>
+<body>
+	<h1>Yelp Review Analyzer</h1>
+    <div id="content">
+    	<div id="instructions">
+	        <p>
+	            This tool analyzes your review based on hundreds of Yelp ROTDs to determine the likelihood
+	            that your review will be selected an ROTD!
+            </p>
+            <p>
+            	Enter your review in the textbox below to get started.
+            </p>
+        </p>
+        <div id="review_input">
+            <textarea id="form_input_text" name="input_text" rows="4" cols="70">Enter Review Text</textarea>
+        </div>
+        <div id="review_submission">
+            <button id="submit_button">Analyze It!</button>
+        </div>
+        <div id="rotd_score_div">
+        </div>
+    </div>
+<!--Input review text:<br>
 <input type="text" id="form_input_text" name="input_text" value="Review Here">
 <br>
 <button id="submit_button">Submit</button>
-<div id="rotd_score_div"></div>
-</BODY>
+<div id="rotd_score_div"></div>-->
+</body>
+
 <script>
-$('#submit_button').click(function(){
-$('#rotd_score_div').text("Calculating...");
-$.ajax({
- type: "GET",
- data: {
-  input_text: $('#form_input_text').val()
- },
- url: "/results"
-}).done(function(data){$('#rotd_score_div').text(data);});
+var firstUse = true;
+
+// Left this the same except for the done function.
+$('#submit_button').click(function() {
+	$('#rotd_score_div').text("Calculating...");
+	$.ajax({
+	 type: "GET",
+	 data: {
+	  input_text: $('#form_input_text').val()
+	 },
+	 url: "/results"
+	}).done(function(data) {
+		var score = parseFloat(data);
+		score = roundScore(score * 100, 2);
+		var scoreText = "There is a " + score.toString() + "% chance of the review being an ROTD!";
+		// This originally said data - change it back to revert.
+		$('#rotd_score_div').text(scoreText);
+	});
 })
+
+$('#form_input_text').click(function() {
+	if (firstUse) {
+		firstUse = false;
+		$('#form_input_text').val("");
+		$('#form_input_text').addClass("active_input");
+	}
+})
+
+function roundScore(value, exp) {
+  if (typeof exp === 'undefined' || +exp === 0)
+    return Math.round(value);
+
+  value = +value;
+  exp  = +exp;
+
+  if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+    return NaN;
+
+  // Shift
+  value = value.toString().split('e');
+  value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+
+  // Shift back
+  value = value.toString().split('e');
+  return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
+}
 </script>
-</HTML>
+</html>
 
