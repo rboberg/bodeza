@@ -65,6 +65,18 @@ Running for testing on a subset:
 
 Running for production holding out 10% for testing:
 	$ python make_rotd_classifier.py rotd_model_data.json 1 0.1 sgdc_pipe.p
+	$ python make_rotd_classifier.py rotd_model_data.json 1 0.1 sgdc_pipe.p
+	Classification Report:
+	             precision    recall  f1-score   support
+
+	    NotROTD       0.92      0.99      0.95    112594
+	       ROTD       0.79      0.23      0.36     13109
+
+	avg / total       0.90      0.91      0.89    125703
+
+	Log Loss:
+	0.214131894687
+
 
 Running for production with no testing:
 	$ python make_rotd_classifier.py rotd_model_data.json 1 0 sgdc_pipe.p
@@ -73,3 +85,4 @@ Running for production with no testing:
 
 predict_rotd.py takes raw review text and the pickled classifier and prints the probability that the review came from the ROTD data set, not the academic data set.
 	$ python predict_rotd.py "review text here" sgdc_pipe.p
+	0.0678734814354
