@@ -30,14 +30,11 @@
 			margin-bottom: 0.5em;
 		}
 		
-		.active_input {
-			color: #333;
-		}
-		
 		#rotd_score_div {
 			text-align: left;
 			margin-left: 0.5em;
 			font-size: 1.5em;
+			width: 50em;
 		}
 	</style>
 </head>
@@ -84,7 +81,7 @@ $('#submit_button').click(function() {
 	}).done(function(data) {
 		var score = parseFloat(data);
 		score = roundScore(score * 100, 2);
-		var scoreText = "There is a " + score.toString() + "% chance of the review being an ROTD!";
+		var scoreText = "There is a " + score.toString() + "% chance of the review being an ROTD in our model!";
 		// This originally said data - change it back to revert.
 		$('#rotd_score_div').text(scoreText);
 	});
@@ -94,7 +91,7 @@ $('#form_input_text').click(function() {
 	if (firstUse) {
 		firstUse = false;
 		$('#form_input_text').val("");
-		$('#form_input_text').addClass("active_input");
+		$('#form_input_text').css('color', '#333');
 	}
 })
 
