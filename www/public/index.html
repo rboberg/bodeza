@@ -10,10 +10,17 @@
 			font-size: 0.77em;
 		}
 		
+		#banner {
+			width: 100%;
+			padding: 5px 2px 5px 2px;
+			margin: 0;
+			background-color: rgb(0, 120, 240);
+		}
 		h1 {
-			color: red;
+			color: white;
+			padding: 0;
+			margin: 0;
 			text-align: center;
-			margin-bottom: 1em;
 		}
 		
 		#content {
@@ -39,12 +46,12 @@
 	</style>
 </head>
 <body>
-	<h1>Yelp Review Analyzer</h1>
+	<div id="banner"><h1>Yelp Review Analyzer</h1></div>
     <div id="content">
     	<div id="instructions">
 	        <p>
-	            This tool analyzes your review based on hundreds of Yelp ROTDs to determine the likelihood
-	            that your review will be selected an ROTD!
+	            This tool analyzes your review based on over one hundred thousand <a href="http://www.yelp.com/browse/reviews/picks_cities">Yelp Reviews Of The Day</a> to determine
+	            how likely it is that your review is ROTD material!
             </p>
             <p>
             	Enter your review in the textbox below to get started.
@@ -71,7 +78,7 @@ var firstUse = true;
 
 // Left this the same except for the done function.
 $('#submit_button').click(function() {
-	$('#rotd_score_div').text("Calculating...");
+	$('#rotd_score_div').text("Reviewing your review...");
 	$.ajax({
 	 type: "GET",
 	 data: {
@@ -81,7 +88,7 @@ $('#submit_button').click(function() {
 	}).done(function(data) {
 		var score = parseFloat(data);
 		score = roundScore(score * 100, 2);
-		var scoreText = "There is a " + score.toString() + "% chance of the review being an ROTD in our model!";
+		var scoreText = "There is a " + score.toString() + "% chance that this review is ROTD quality.";
 		// This originally said data - change it back to revert.
 		$('#rotd_score_div').text(scoreText);
 	});
