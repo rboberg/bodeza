@@ -17,6 +17,8 @@ MIDS Fall 2014 Project
 	bodeza/
 		src/ (for all the source code)
 			python/ (for python scripts)
+		www/ (web files for final deliverable)
+		beautiful_soup/ (scraper code and results)
 
 ### Yelp Data
 The yelp data we're working on is too big for github. So the code for now assumes that the bodeza repo on your local machine has the same parent directory as another folder called "bodeza_data", which has a subfolder "yelp_data".
