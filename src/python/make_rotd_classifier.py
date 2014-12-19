@@ -2,6 +2,15 @@
 """
 Created on Wed Dec 03 17:05:07 2014
 
+make_rotd_json.py combines ROTD and Yelp Academic Data Set Review Data in to a single JSON.
+It takes 5 arguments:
+    1. path to folder holding ROTD scrape results for each city
+    2. path to JSON file for academic dataset review
+    3. max number of reviews to load for each data set
+    4. combined JSON data file output
+    5. name of text file for mrjob
+
+
 @author: Ross
 """
 

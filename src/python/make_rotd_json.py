@@ -2,6 +2,14 @@
 """
 Created on Tue Dec 02 14:42:07 2014
 
+make_rotd_classifier.py trains the classifier and pickles a scikit-learn pipeline object that can be used to evaluate raw text reviews.
+It takes 4 arguments:
+    1. combined JSON file output from step 1
+    2. percent of the JSON data to use in building the model as a decimal - useful for running on subsets of the data for testing
+    3. percent of the used data held out for testing as a decimal
+    4. the name of the file to save the classifier pipeline pickle
+
+
 @author: Ross
 """
 import sys
@@ -58,7 +66,7 @@ def main(argv=None):
             if i >= import_limit:
                 break
 
-        print 'loaded ROTD'
+        #print 'loaded ROTD'
         
         # load JSON data
         
@@ -74,14 +82,14 @@ def main(argv=None):
                 #base_reviews.append(base_data[i]['text'].encode('utf8'))
                 base_reviews.append(base_data[i]['text'].encode('ascii', 'ignore'))
                 i += 1
-                print str(i) + '/' + str(import_limit)
+                #print str(i) + '/' + str(import_limit)
                 if i >= import_limit:
                     break
         
         
         fd.close()
         
-        print 'loaded other reviews'
+        #print 'loaded other reviews'
         
         # Create ROTD / NOT ROTD lists
         all_class = (['ROTD']*len(rotd_reviews)) + (['NotROTD']*len(base_reviews))
@@ -95,21 +103,19 @@ def main(argv=None):
         j = 0
         for i in shuffle_order:
             j += 1
-            print j    
+            #print j    
             review_text = all_review[i]#.decode('utf8','ignore').encode('ascii','ignore')
             rotd_model_data.append({'id':i, 'text':review_text, 'type':all_class[i]})
             rotd_model_mrjob.append(str(i) + "\t" + strip_t_n.sub(r' ',review_text))
         
+        # write JSON file
         with open(out_fn, 'w') as out_fd:
             json.dump(rotd_model_data, out_fd)
         
-        
+        # write tab separated text file for mrjob processing
         with open(mr_out, 'w') as out_fd:
             out_fd.write(u"\n".join(rotd_model_mrjob))
             
-    
-    
-
         
 if __name__ == "__main__":
     sys.exit(main())

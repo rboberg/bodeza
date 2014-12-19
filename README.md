@@ -53,7 +53,7 @@ Running for testing on a subset:
 
 Running for production:
 	
-	$ python make_rotd_json.py ../../beautiful_soup/results ../../../bodeza_data/yelp_data/yelp_academic_dataset_review.json 2000000 rotd_model.json mrjob.txt
+	$ python make_rotd_json.py ../../beautiful_soup/results ../../../bodeza_data/yelp_data/yelp_academic_dataset_review.json 2000000 rotd_model_data.json mrjob.txt
 
 ### Step2 Train & Save
 
@@ -95,3 +95,13 @@ predict_rotd.py takes raw review text and the pickled classifier and prints the 
 	
 	$ python predict_rotd.py "review text here" sgdc_pipe.p
 	0.0678734814354
+
+### Step3.75 Preprocess Text with mrjob
+
+We worked in a mrjob mapper that can preprocess reviews (tokenize, stem, remove stops) as a proof of concept for handling more data, though it was not necessary for our project and did not make it in to our production stack.
+
+The make_rotd_json file above also creates a text file for mrjob processing. The mapper code can be run on that text file as:
+
+	$ python pretokenize_mrjob.py mrjob.txt | processed.txt
+
+This returns key value pairs of review id's and space separated strings of tokens that can be further processed by scikit-learn classifiers.
