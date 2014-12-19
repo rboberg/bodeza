@@ -11,7 +11,7 @@ Yelp Academic Challenge Dataset.
 import pymongo
 import json
 
-client = pymongo.MongoClient("mongodb://zsz:zszmongopw@ds048537.mongolab.com:48537/zsz-mongolab")
+client = pymongo.MongoClient("mongodb://zsz:--------@ds048537.mongolab.com:48537/zsz-mongolab")
 db = client["zsz-mongolab"]
 
 collection = db["yelp_businesses"]
