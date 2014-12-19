@@ -102,6 +102,6 @@ We worked in a mrjob mapper that can preprocess reviews (tokenize, stem, remove 
 
 The make_rotd_json file above also creates a text file for mrjob processing. The mapper code can be run on that text file as:
 
-	$ python pretokenize_mrjob.py mrjob.txt | processed.txt
+	$ python pretokenize_mrjob.py mrjob.txt > processed.txt
 
 This returns key value pairs of review id's and space separated strings of tokens that can be further processed by scikit-learn classifiers.
